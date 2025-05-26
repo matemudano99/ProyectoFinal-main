@@ -1,0 +1,5 @@
+package enums;
+
+enum TipoInfraestructura {
+	HABITACION, QUIROFANO, CONSULTORIO
+}

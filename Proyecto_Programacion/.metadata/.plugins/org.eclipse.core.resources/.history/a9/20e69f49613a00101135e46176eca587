@@ -1,0 +1,165 @@
+package proyecto;
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+
+public class HospitalLoginUi {
+	static ArrayList<Paciente> listaPacientes = new ArrayList<>();
+	static ArrayList<String> listaEmpleados = new ArrayList<>();
+	
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> mostrarLogin());
+	}
+
+	public static void mostrarLogin() {
+		JFrame frame = new JFrame("Login Hospital");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(400, 300);
+		frame.setLocationRelativeTo(null);
+		frame.setLayout(new BorderLayout());
+
+		Color fondo = new Color(245, 245, 245);
+		Color btnColor = new Color(33, 150, 243);
+		Color txtBtn = Color.WHITE;
+		Font fuente = new Font("Arial", Font.PLAIN, 14);
+
+		JPanel panel = new JPanel(new GridLayout(4, 2, 10, 10));
+		panel.setBorder(BorderFactory.createEmptyBorder(40, 40, 10, 40));
+		panel.setBackground(fondo);
+
+		JLabel usuarioLabel = new JLabel("Usuario:");
+		JTextField usuarioField = new JTextField();
+		JLabel passwordLabel = new JLabel("Contraseña:");
+		JPasswordField passwordField = new JPasswordField();
+		JLabel rolLabel = new JLabel("Rol:");
+		String[] roles = {"Administrador", "Doctor", "Recepcionista"};
+		JComboBox<String> rolBox = new JComboBox<>(roles);
+
+		// Añadir componentes al panel
+		panel.add(usuarioLabel);
+		panel.add(usuarioField);
+		panel.add(passwordLabel);
+		panel.add(passwordField);
+		panel.add(rolLabel);
+		panel.add(rolBox);
+		panel.add(new JLabel()); // espacio vacío
+		panel.add(new JLabel()); // espacio vacío
+
+		frame.add(panel, BorderLayout.CENTER);
+
+		// Botón de login
+		JButton loginBtn = new JButton("Entrar");
+		loginBtn.setFont(fuente);
+		loginBtn.setBackground(btnColor);
+		loginBtn.setForeground(txtBtn);
+
+		JPanel botonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		botonPanel.setBorder(BorderFactory.createEmptyBorder(0, 40, 40, 40));
+		botonPanel.setBackground(fondo);
+		botonPanel.add(loginBtn);
+		frame.add(botonPanel, BorderLayout.SOUTH);
+
+		// Acción al hacer clic en "Entrar"
+		loginBtn.addActionListener(e -> {
+			String usuario = usuarioField.getText();
+			String password = new String(passwordField.getPassword());
+			String rolSeleccionado = (String) rolBox.getSelectedItem();
+
+			if (usuario.isEmpty() || password.isEmpty()) {
+				JOptionPane.showMessageDialog(frame, "Debe ingresar usuario y contraseña.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			frame.dispose(); // Cierra la ventana de login
+			menuPrincipal(rolSeleccionado); // Abre el menú principal
+			JOptionPane.showMessageDialog(null, "Acceso realizado con éxito.\nUsuario: " + usuario);
+		});
+
+		frame.getContentPane().setBackground(fondo);
+		frame.setVisible(true); // Mostrar ventana
+	}
+
+	// Aplica una fuente a varios componentes
+	private static void aplicarEstilo(Font fuente, Component[] comps) {
+		for (int i = 0; i < comps.length; i++) {
+			comps[i].setFont(fuente);
+		}
+	}
+
+	// Menú principal según el rol
+	public static void menuPrincipal(String rol) {
+		JFrame frame = new JFrame("Menú Principal - Rol: " + rol);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(500, 400);
+		frame.setLocationRelativeTo(null);
+
+		JPanel panel = new JPanel(new GridLayout(0, 1, 10, 10));
+		panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+		JButton btnPacientes = new JButton("Gestión de Pacientes");
+		btnPacientes.addActionListener(e -> gestionPacientes(rol));
+		panel.add(btnPacientes);
+
+		JButton btnCerrarSesion = new JButton("Cerrar Sesión");
+		btnCerrarSesion.addActionListener(e -> {
+			frame.dispose();
+			mostrarLogin();
+		});
+		panel.add(btnCerrarSesion);
+
+		frame.add(panel);
+		frame.setVisible(true);
+	}
+	// Ventana genérica de gestión (empleados, salas, etc.)
+	public static void gestionGenerica(String titulo, String[] columnas, String rol) {
+		// contenido omitido por límite de caracteres
+	}
+
+	// Interfaz para la gestión específica de pacientes
+	public static void gestionPacientes(String rol) {
+		JFrame frame = new JFrame("Gestión de Pacientes - " + rol);
+		frame.setSize(600, 400);
+		frame.setLocationRelativeTo(null);
+		frame.setLayout(new BorderLayout());
+
+		String[] labels = {"DNI", "Nombre", "Apellidos", "Género (M/F)", "Teléfono", "Email", "Obra Social"};
+		JTextField[] fields = new JTextField[labels.length];
+
+		JPanel form = new JPanel(new GridLayout(labels.length, 2, 5, 5));
+		for (int i = 0; i < labels.length; i++) {
+			form.add(new JLabel(labels[i] + ":"));
+			fields[i] = new JTextField();
+			form.add(fields[i]);
+		}
+
+		JButton btnGuardar = new JButton("Registrar Paciente");
+		btnGuardar.addActionListener(e -> {
+			try {
+				String dni = fields[0].getText();
+				String nombre = fields[1].getText();
+				String apellidos = fields[2].getText();
+				char generoChar = fields[3].getText().toUpperCase().charAt(0);
+				Genero genero = (generoChar == 'M') ? Genero.HOMBRE : Genero.MUJER;
+				int telefono = Integer.parseInt(fields[4].getText());
+				String email = fields[5].getText();
+				String obraSocial = fields[6].getText();
+
+				// Se crea con habitación y solicitud médica por defecto (null / false)
+				Paciente nuevo = new Paciente(dni, nombre, apellidos, genero, telefono, email, obraSocial, null, false);
+				listaPacientes.add(nuevo);
+
+				JOptionPane.showMessageDialog(frame, "Paciente registrado correctamente.");
+				for (JTextField field : fields) field.setText("");
+
+			} catch (Exception ex) {
+				JOptionPane.showMessageDialog(frame, "Error al registrar paciente: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		});
+
+		frame.add(form, BorderLayout.CENTER);
+		frame.add(btnGuardar, BorderLayout.SOUTH);
+		frame.setVisible(true);
+	}
+
+}

@@ -57,6 +57,17 @@ public class MainUI {
 		boton.setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25));
 		boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+		boton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				boton.setBackground(COLOR_AZUL_HOVER);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				boton.setBackground(COLOR_AZUL);
+			}
+		});
 	}
 
 	/**
@@ -70,6 +81,17 @@ public class MainUI {
 		boton.setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25));
 		boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+		boton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				boton.setBackground(COLOR_GRIS_HOVER);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				boton.setBackground(COLOR_GRIS);
+			}
+		});
 	}
 
 	/**
@@ -83,6 +105,17 @@ public class MainUI {
 		boton.setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25));
 		boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+		boton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				boton.setBackground(COLOR_GRIS);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				boton.setBackground(COLOR_GRIS_OSCURO);
+			}
+		});
 	}
 
 	public static void mostrarLogin() {
